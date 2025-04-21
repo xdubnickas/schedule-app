@@ -1,35 +1,34 @@
-import { useState } from 'react'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import './App.css';
+
+// Components
+import Navbar from './components/Navbar';
+
+// Page components
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import NotFound from './pages/NotFound';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="container mx-auto p-4">
-      <div className="hero bg-base-200 rounded-lg p-6 mb-6">
-        <div className="hero-content text-center">
-          <div>
-            <h1 className="text-5xl font-bold mb-4">Schedule Share</h1>
-            <p className="py-4">Moderná aplikácia na tvorbu a zdieľanie rozvrhov.</p>
-            <button className="btn btn-primary">Začať</button>
-          </div>
+    <Router>
+      <div className="min-h-screen bg-base-100">
+        {/* Navigation */}
+        <Navbar />
+
+        {/* Content */}
+        <div className="container mx-auto p-4">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
         </div>
       </div>
-      
-      
-      <div className="card bg-base-100 shadow-xl max-w-md mx-auto">
-        <div className="card-body items-center text-center">
-          <h2 className="card-title">DaisyUI Test</h2>
-          <p>Počítadlo: {count}</p>
-          <div className="card-actions justify-center mt-4">
-            <button onClick={() => setCount((count) => count + 1)} className="btn btn-accent">
-              Zvýšiť počet
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
+    </Router>
+  );
 }
 
-export default App
+export default App;
