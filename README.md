@@ -1,49 +1,48 @@
 # 🌍 Schedule Share
 
-Jednoduchá a moderná webová aplikácia na **tvorbu a zdieľanie rozvrhov**. Vhodná pre študentov, tímové plánovanie alebo osobné použitie.
+Simple and modern web application for **creating and sharing schedules**. Suitable for students, team planning, or personal use.
 
 ---
 
-## ✨ Funkcie
+## ✨ Features
 
-- 🧠 Tvorba vlastného rozvrhu online
-- 🔗 Zdieľanie rozvrhu pomocou linku
-- 🔐 Prihlásenie a registrácia cez Supabase Auth
-- 🌐 Pripravené na globálne použitie (aj bez registrácie)
-- 💅 Moderné UI s DaisyUI + Tailwind CSS
-- 🚀 Rýchly výkon vďaka React + Vite
+- 🧠 Create your own schedule online
+- 🔗 Share your schedule via link
+- 🔐 Login and registration through Supabase Auth
+- 💅 Modern UI with DaisyUI + Tailwind CSS
+- 🚀 Fast performance thanks to React + Vite
 
 ---
 
-## 🧱 Použité technológie
+## 🧱 Technologies Used
 
-| Technológia | Popis |
+| Technology | Description |
 |------------|-------|
 | [React](https://reactjs.org) | Frontend framework |
-| [Vite](https://vitejs.dev) | Ultra-rýchly build systém |
+| [Vite](https://vitejs.dev) | Ultra-fast build system |
 | [Tailwind CSS](https://tailwindcss.com) | Utility-first CSS |
-| [DaisyUI](https://daisyui.com) | Komponentová knižnica pre Tailwind |
+| [DaisyUI](https://daisyui.com) | Component library for Tailwind |
 | [Supabase](https://supabase.com) | Backend (Auth, DB, API) |
 
 ---
 
-## 🛠️ Inštalácia (lokálne)
+## 🛠️ Installation (local)
 
 ```bash
-# 1. Klonuj projekt
-git clone https://github.com/tvoje-meno/schedule-share.git
+# 1. Clone the project
+git clone https://github.com/your-name/schedule-share.git
 cd schedule-share
 
-# 2. Inštaluj závislosti
+# 2. Install dependencies
 npm install
 
-# 3. Spusti vývojový server
+# 3. Start development server
 npm run dev
 ```
 
-## ⚙️ Konfigurácia
+## ⚙️ Configuration
 
-Vytvor `.env` súbor s nasledujúcim obsahom:
+Create a `.env` file with the following content:
 
 ```ini
 VITE_SUPABASE_URL=https://xyz.supabase.co

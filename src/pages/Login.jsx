@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import supabase from '../services/supabaseClient';
+import { AuthContext } from '../contexts/AuthContext'; // alebo správna cesta k súboru
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -10,6 +10,7 @@ function Login() {
   const [successMessage, setSuccessMessage] = useState('');
   const navigate = useNavigate();
   const location = useLocation();
+  const { signIn } = useContext(AuthContext);
 
   // Get success message from registration if available
   useEffect(() => {
@@ -24,18 +25,14 @@ function Login() {
     setError(null);
     
     try {
-      // Sign in user with Supabase
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error: signInError } = await signIn(email, password);
       
       if (signInError) {
         throw signInError;
       }
       
       // Login successful
-      console.log('Login successful:', data);
+      console.log('Login successful');
       
       // Navigate to home page or dashboard
       navigate('/');
@@ -99,7 +96,9 @@ function Login() {
                 required
               />
               <label className="label">
-                <a href="#" className="label-text-alt link link-hover">Forgot password?</a>
+                <Link to="/forgot-password" className="label-text-alt link link-primary">
+                  Forgot password?
+                </Link>
               </label>
             </div>
             

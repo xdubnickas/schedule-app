@@ -1,3 +1,26 @@
 @import "tailwindcss";
 @plugin "daisyui";
 
+/* Prevent layout shift when modals open */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
+.btn-edittt {
+  background: #26262fe7;
+  color: white;
+  border: none;
+  transition: all 0.15s ease-in-out;
+}
+
+.btn-edittt:hover {
+  background: #22222afd;
+  color: white;
+  border: none;
+}
+
+/* Add space below textarea for icons */
+.textarea-bordered + .form-control {
+  margin-top: 2rem;
+}
