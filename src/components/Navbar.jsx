@@ -1,11 +1,31 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useContext(AuthContext);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [visible, setVisible] = useState(true);
+
+  // Handle scroll events to show/hide navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollPos = window.pageYOffset;
+      
+      // Make navbar visible when:
+      // 1. Scrolling up
+      // 2. At the top of the page (position < 10px)
+      const isVisible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
+      
+      setPrevScrollPos(currentScrollPos);
+      setVisible(isVisible);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [prevScrollPos]);
 
   const handleLogout = async () => {
     try {
@@ -21,7 +41,11 @@ function Navbar() {
   };
 
   return (
-    <div className="navbar bg-base-200 shadow-md px-4 lg:px-8">
+    <div 
+      className={`navbar bg-base-200 shadow-md px-4 lg:px-8 fixed top-0 w-full z-50 transition-transform duration-300 ease-in-out ${
+        visible ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -46,7 +70,8 @@ function Navbar() {
             </li>
           </ul>
         </div>
-        <Link to={user ? "/dashboard" : "/"} className="btn btn-ghost text-xl font-bold">
+        <Link to={user ? "/dashboard" : "/"} className="btn btn-ghost text-xl font-bold flex items-center gap-2">
+          <img src="/share.png" alt="Schedule Share Logo" className="w-6 h-6" />
           <span className="text-primary">Schedule</span>Share
         </Link>
       </div>

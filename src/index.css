@@ -3,19 +3,34 @@
 
 /* Prevent layout shift when modals open */
 html {
-  overflow-y: scroll;
-  scrollbar-gutter: stable;
+  overflow-y: scroll !important;
+  scrollbar-gutter: stable !important;
+  width: 100vw;
+  padding-right: 0 !important; /* Prevent automatic padding */
+}
+
+body {
+  padding-right: 0 !important;
+  overflow-y: scroll !important;
+  position: relative;
+}
+
+body.overflow-hidden,
+body.modal-open {
+  padding-right: 0 !important;
+  overflow-y: scroll !important; /* Keep scrollbar visible even when locked */
+  width: 100%; /* Prevent width changes */
+  position: relative;
 }
 
 .btn-edittt {
-  background: #26262fe7;
   color: white;
   border: none;
   transition: all 0.15s ease-in-out;
 }
 
 .btn-edittt:hover {
-  background: #22222afd;
+  background: #2b2b36fd;
   color: white;
   border: none;
 }
@@ -23,4 +38,317 @@ html {
 /* Add space below textarea for icons */
 .textarea-bordered + .form-control {
   margin-top: 2rem;
+}
+
+/* Enhanced schedule fullscreen transitions */
+.schedule-container {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: center center;
+  backface-visibility: hidden;
+  will-change: transform, opacity;
+}
+
+.schedule-pre-fullscreen {
+  transform-origin: var(--schedule-origin-x, center) var(--schedule-origin-y, center);
+}
+
+.schedule-fullscreen {
+  animation: schedule-fullscreen-appear 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* New exit animation */
+.schedule-exiting-fullscreen {
+  animation: schedule-fullscreen-exit 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.schedule-fullscreen-active .schedule-container:not(.schedule-fullscreen) {
+  transform: scale(0.95);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.schedule-grid {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  transform-origin: top center;
+}
+
+.schedule-grid-expanded {
+  animation: schedule-grid-expand 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.schedule-exit-animation .schedule-grid-expanded {
+  animation: schedule-grid-collapse 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.schedule-header {
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Enhanced entry hover effects */
+.schedule-entry {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.schedule-entry:hover {
+  transform: scale(1.02) translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.25), 0 2px 4px rgba(0,0,0,0.22);
+  z-index: 20;
+}
+
+.btn-error2 {
+  color: white;
+  border: none;
+  transition: all 0.15s ease-in-out;
+  background: #b02a2c;
+}
+
+.btn-error2:hover {
+  background: #a12527;
+  border: none;
+}
+
+/* Prevent automatic scrolling when modal opens */
+.modal-open .always-show-scrollbar,
+.modal-opening .always-show-scrollbar {
+  scroll-behavior: auto !important;
+  overscroll-behavior: none !important;
+  position: relative !important;
+  overflow-anchor: none !important;
+  scroll-snap-type: none !important;
+}
+
+/* Lock scroll position when modal is open */
+.modal-opening {
+  scroll-behavior: auto !important;
+  overflow-anchor: none !important;
+}
+
+/* Disable transitions on scrollable containers during modal operations */
+.modal-open .always-show-scrollbar *,
+.modal-opening .always-show-scrollbar * {
+  transition: none !important;
+}
+
+/* Prevent modal from affecting page scroll position */
+.modal {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Enhanced modal styling to prevent scroll jumps */
+.modal-container {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Improve modal backdrop */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.7) !important;
+  z-index: 1;
+  touch-action: none;
+}
+
+/* Fixed modal styles that prevent scroll jumps */
+.modal-wrapper {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+/* Cleaner modal animation that doesn't affect layout */
+@keyframes modal-appear {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-container {
+  animation: modal-appear 0.2s ease-out forwards;
+  max-width: 28rem !important;
+  width: 100%;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25),
+              0 10px 10px -5px rgba(0, 0, 0, 0.1);
+  background-color: hsl(var(--b1)) !important; /* Force solid background */
+  color: hsl(var(--bc));
+  z-index: 2;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  border: 1px solid rgba(0, 0, 0, 0.1); /* Add border for better visibility */
+}
+
+/* Add some padding to modal content */
+.modal-container > div {
+  padding: 1.5rem;
+}
+
+html.modal-open,
+body.modal-open {
+  /* Prevent any scrolling but keep scrollbar visible to avoid layout shift */
+  overflow: hidden !important;
+  overscroll-behavior: none;
+  position: relative;
+}
+
+/* Extra styles to help with scroll position */
+.modal-lock-scroll, 
+.modal-freeze {
+  overflow: hidden !important;
+}
+
+/* Ensure modal boxes don't cause layout shifts */
+.modal-box {
+  max-width: 32rem;
+  margin: 0 auto;
+  border-radius: 0.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  overflow: auto;
+  max-height: 90vh;
+}
+
+/* Standard modal actions */
+.modal-action {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Clean up body styling when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Fix the black screen modal backdrop issue */
+.fixed.inset-0.bg-black {
+  opacity: 0.6 !important;
+}
+
+/* Ensure modal content is visible */
+.relative.z-50.bg-base-100 {
+  opacity: 1 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Animations */
+@keyframes schedule-fullscreen-appear {
+  0% {
+    transform: scale(0.98);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* New exit animation keyframes */
+@keyframes schedule-fullscreen-exit {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.98);
+    opacity: 1;
+  }
+}
+
+@keyframes schedule-grid-expand {
+  0% {
+    transform: translateY(10px) scale(0.98);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* New grid collapse animation */
+@keyframes schedule-grid-collapse {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+/* Make all transitions smoother and longer */
+.schedule-container *,
+.schedule-container *::before,
+.schedule-container *::after {
+  transition-property: background-color, border-color, color, fill, stroke, opacity, box-shadow, transform;
+  transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+  transition-duration: 0.4s;
+}
+
+/* Improve button transition */
+.schedule-container .btn {
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Always show scrollbar with improved styling */
+.always-show-scrollbar::-webkit-scrollbar {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-thumb {
+  border-radius: 6px;
+  background-color: rgba(100, 100, 100, 0.4);
+  transition: background-color 0.3s ease;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.always-show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(80, 80, 80, 0.7);
+}
+
+.always-show-scrollbar::-webkit-scrollbar-track {
+  background-color: rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+}
+
+/* For Firefox */
+.always-show-scrollbar {
+  scrollbar-width: auto; /* Changed from thin to auto for thicker scrollbar */
+  scrollbar-color: rgba(100, 100, 100, 0.4) rgba(0, 0, 0, 0.08);
+}
+
+/* Make sure overflow is set appropriately */
+.always-show-scrollbar {
+  overflow: auto;
+}
+
+/* Add a special class for dark theme compatibility */
+.dark .always-show-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(200, 200, 200, 0.4);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.dark .always-show-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(200, 200, 200, 0.7);
+}
+
+.dark .always-show-scrollbar::-webkit-scrollbar-track {
+  background-color: rgba(255, 255, 255, 0.05);
 }

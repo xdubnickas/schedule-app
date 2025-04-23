@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 import supabase from '../services/supabaseClient';
 
 function Dashboard() {
   const { user, profile } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
   const [schedules, setSchedules] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -15,6 +17,8 @@ function Dashboard() {
     description: '',
     is_public: false
   });
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [scheduleToDelete, setScheduleToDelete] = useState(null);
   
   // If not logged in, redirect to login page
   useEffect(() => {
@@ -35,11 +39,13 @@ function Dashboard() {
 
           if (error) {
             console.error('Error fetching schedules:', error);
+            showError('Failed to fetch schedules');
           } else {
             setSchedules(data || []);
           }
         } catch (err) {
           console.error('Failed to fetch schedules:', err);
+          showError('Failed to fetch schedules');
         } finally {
           setLoading(false);
         }
@@ -47,7 +53,7 @@ function Dashboard() {
     };
 
     fetchSchedules();
-  }, [user]);
+  }, [user, showError]);
 
   // Replace the existing modal effect with a simpler approach
   useEffect(() => {
@@ -83,6 +89,11 @@ function Dashboard() {
     setModalOpen(true);
   };
 
+  const openDeleteModal = (schedule) => {
+    setScheduleToDelete(schedule);
+    setDeleteModal(true);
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
@@ -112,6 +123,8 @@ function Dashboard() {
         setSchedules(schedules.map(s => 
           s.id === currentSchedule.id ? {...s, ...formData} : s
         ));
+        
+        showSuccess('Schedule updated successfully');
       } else {
         // Create new schedule
         const { data, error } = await supabase
@@ -130,13 +143,36 @@ function Dashboard() {
         
         // Add to local state
         setSchedules([...schedules, ...data]);
+        showSuccess('Schedule created successfully');
       }
       
       // Close modal
       setModalOpen(false);
     } catch (err) {
       console.error('Error saving schedule:', err);
-      alert('Failed to save schedule. Please try again.');
+      showError('Failed to save schedule. Please try again.');
+    }
+  };
+
+  const deleteSchedule = async () => {
+    if (!scheduleToDelete) return;
+    
+    try {
+      const { error } = await supabase
+        .from('schedules')
+        .delete()
+        .eq('id', scheduleToDelete.id);
+        
+      if (error) throw error;
+      
+      // Update local state
+      setSchedules(schedules.filter(s => s.id !== scheduleToDelete.id));
+      setDeleteModal(false);
+      setScheduleToDelete(null);
+      showSuccess('Schedule deleted successfully');
+    } catch (err) {
+      console.error('Error deleting schedule:', err);
+      showError('Failed to delete schedule. Please try again.');
     }
   };
 
@@ -221,7 +257,17 @@ function Dashboard() {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                           </svg>
                         </button>
-                        <button className="btn btn-sm join-item btn-primary tooltip" data-tip="View">
+                        <button 
+                          className="btn btn-sm join-item btn-error2 tooltip" 
+                          data-tip="Delete"
+                          onClick={() => openDeleteModal(schedule)}
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                        <button className="btn btn-sm join-item btn-primary tooltip" data-tip="View"
+                          onClick={() => navigate(`/schedule/${schedule.id}`)}>
                           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
@@ -357,6 +403,38 @@ function Dashboard() {
           <div 
             className="modal-backdrop" 
             onClick={() => setModalOpen(false)}
+          ></div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteModal && (
+        <div className="modal modal-open">
+          <div className="modal-box max-md mx-auto relative">
+            <h3 className="font-bold text-lg">Delete Schedule</h3>
+            <p className="py-4">
+              Are you sure you want to delete "<span className="font-semibold">{scheduleToDelete?.title}</span>"? 
+              <br />
+              This action cannot be undone.
+            </p>
+            <div className="modal-action">
+              <button 
+                onClick={() => setDeleteModal(false)} 
+                className="btn"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={deleteSchedule} 
+                className="btn btn-error"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+          <div 
+            className="modal-backdrop" 
+            onClick={() => setDeleteModal(false)}
           ></div>
         </div>
       )}

@@ -72,6 +72,7 @@ function Login() {
             <div className="form-control">
               <label className="label pb-1">
                 <span className="label-text text-base">Email</span>
+                <span className="label-text-alt text-red-500">*</span>
               </label>
               <input 
                 type="email" 
@@ -86,6 +87,7 @@ function Login() {
             <div className="form-control mt-4">
               <label className="label pb-1">
                 <span className="label-text text-base">Password</span>
+                <span className="label-text-alt text-red-500">*</span>
               </label>
               <input 
                 type="password" 
