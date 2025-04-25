@@ -1,0 +1,184 @@
+/* Modern styles for the shared schedule view with horizontal balance */
+
+.shared-schedule-container {
+  position: relative;
+}
+
+/* Header styling with horizontal layout */
+.shared-schedule-header {
+  position: relative;
+  padding-bottom: 1.5rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* Simplified title with less vertical space */
+.shared-title {
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
+}
+
+.shared-description {
+  font-size: 1rem;
+  color: hsl(var(--bc) / 0.7);
+  margin-bottom: 0.75rem;
+  max-width: 85%;
+  line-height: 1.5;
+}
+
+/* Header content in a horizontal flex layout */
+.shared-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.shared-header-left {
+  flex: 1;
+  min-width: 280px;
+}
+
+.shared-header-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-width: 250px;
+  align-items: flex-end;
+}
+
+/* Owner info styling - more compact and horizontal */
+.owner-info {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background: hsl(var(--b2) / 0.5);
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  margin-top: 0.5rem;
+  width: fit-content;
+}
+
+.owner-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  background: linear-gradient(135deg, #7472FF 0%, #5c59ff 100%);
+  color: white;
+  border-radius: 0.75rem;
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-right: 0.75rem;
+  box-shadow: 0 2px 4px rgba(116, 114, 255, 0.3);
+}
+
+.owner-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.shared-by-label {
+  font-size: 0.75rem;
+  color: hsl(var(--bc) / 0.6);
+  margin-bottom: 0.125rem;
+}
+
+.owner-name {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.owner-fullname {
+  font-size: 0.75rem;
+  color: hsl(var(--bc) / 0.7);
+}
+
+/* Schedule metadata styling - more compact and horizontal */
+.schedule-metadata {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.schedule-badge {
+  display: flex;
+  align-items: center;
+  padding: 0.375rem 0.75rem;
+  background: linear-gradient(135deg, #7472FF 0%, #5c59ff 100%);
+  color: white;
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px rgba(116, 114, 255, 0.2);
+  white-space: nowrap;
+}
+
+.schedule-badge svg {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.375rem;
+}
+
+.created-date {
+  display: flex;
+  align-items: center;
+  color: hsl(var(--bc) / 0.7);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.created-date svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  margin-right: 0.375rem;
+  opacity: 0.7;
+}
+
+
+
+/* Animation for the shared schedule */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+/* Button styling */
+.action-button {
+  background: linear-gradient(135deg, #7472FF 0%, #5c59ff 100%);
+  color: white;
+  border: none;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(116, 114, 255, 0.2);
+}
+
+.action-button:hover {
+  background: linear-gradient(135deg, #5c59ff 0%, #4845ff 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(116, 114, 255, 0.3);
+}
+
+.action-button svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+

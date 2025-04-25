@@ -145,14 +145,6 @@ body.modal-open {
   isolation: isolate;
 }
 
-/* Improve modal backdrop */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(0, 0, 0, 0.7) !important;
-  z-index: 1;
-  touch-action: none;
-}
 
 /* Fixed modal styles that prevent scroll jumps */
 .modal-wrapper {

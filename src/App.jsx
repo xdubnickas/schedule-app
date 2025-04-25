@@ -17,6 +17,7 @@ import Dashboard from './pages/Dashboard';
 import ForgotPassword from './pages/ForgotPassword';
 import NotFound from './pages/NotFound';
 import ScheduleDetail from './pages/ScheduleDetail';
+import SharedSchedule from './pages/SharedSchedule';
 
 function App() {
   const { user } = useContext(AuthContext);
@@ -129,7 +130,7 @@ function App() {
                 } 
               />
               
-              {/* New route for schedule details */}
+              {/* Schedule routes */}
               <Route 
                 path="/schedule/:scheduleId" 
                 element={
@@ -137,6 +138,12 @@ function App() {
                     <ScheduleDetail />
                   </ProtectedRoute>
                 } 
+              />
+              
+              {/* Public schedule share route - no authentication required */}
+              <Route 
+                path="/schedule/share/:scheduleId" 
+                element={<SharedSchedule />} 
               />
               
               {/* Catch all */}
