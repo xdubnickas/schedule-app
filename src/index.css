@@ -344,3 +344,7 @@ body.modal-open {
 .dark .always-show-scrollbar::-webkit-scrollbar-track {
   background-color: rgba(255, 255, 255, 0.05);
 }
+
+.btn-copyshare{
+  background: rgb(220, 73, 186);
+}

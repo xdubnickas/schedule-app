@@ -31,10 +31,8 @@ function Login() {
         throw signInError;
       }
       
-      // Login successful
       console.log('Login successful');
       
-      // Navigate to home page or dashboard
       navigate('/');
     } catch (err) {
       console.error('Error during login:', err);

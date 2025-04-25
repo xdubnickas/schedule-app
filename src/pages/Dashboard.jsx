@@ -275,7 +275,7 @@ function Dashboard() {
                         </button>
                         {schedule.is_public && (
                           <button 
-                            className="btn btn-sm join-item btn-secondary tooltip" 
+                            className="btn btn-sm join-item btn-copyshare tooltip" 
                             data-tip="Copy share link"
                             onClick={() => copyShareableLink(schedule.id)}
                           >

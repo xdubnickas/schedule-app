@@ -15,3 +15,61 @@
   .animate-toast-exit {
     animation: toastExit 0.3s ease-in;
   }
+
+
+  :root {
+    --scrollbar-width: ${scrollbarWidth}px;
+  }
+  
+  html {
+    overflow-y: scroll !important;
+    width: calc(100vw - (100vw - 100%));
+    scrollbar-gutter: stable !important;
+  }
+  
+  .modal-lock {
+    padding-right: var(--scrollbar-width) !important;
+  }
+  
+  /* Prevent jumps when modal opens */
+  html.modal-freeze,
+  html.modal-freeze body {
+    overflow: hidden !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    position: relative !important;
+  }
+  
+  /* Completely disable scroll behavior during modal interactions */
+  .modal-open * {
+    scroll-behavior: auto !important;
+    overflow-anchor: none !important;
+  }
+
+  @keyframes float {
+    0% { 
+      opacity: 1;
+    }
+    50% { 
+      opacity: 0.6;
+    }
+    100% { 
+      opacity: 1;
+    }
+  }
+  
+  .animate-float {
+    animation: float 5s ease-in-out infinite;
+  }
+  
+  @keyframes float-particle {
+    0% { transform: translateY(0px) translateX(0px); }
+    25% { transform: translateY(-10px) translateX(10px); }
+    50% { transform: translateY(0px) translateX(20px); }
+    75% { transform: translateY(10px) translateX(10px); }
+    100% { transform: translateY(0px) translateX(0px); }
+  }
+  
+  .particle {
+    animation: float-particle 10s linear infinite;
+  }

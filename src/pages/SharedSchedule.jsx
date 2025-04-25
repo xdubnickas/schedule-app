@@ -122,8 +122,6 @@ function SharedSchedule() {
       </div>
     );
   }
-
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   
   // Get formatted date
   const formatDate = (dateString) => {

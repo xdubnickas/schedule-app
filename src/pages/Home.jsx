@@ -6,7 +6,6 @@ function Home() {
   const [isVisible, setIsVisible] = useState(false);
   
   useEffect(() => {
-    // Trigger animations after component mounts
     setIsVisible(true);
   }, []);
 
@@ -27,15 +26,13 @@ function Home() {
       {/* Hero Section with Enhanced Animations */}
       <div className="hero min-h-[50vh] bg-gradient-to-br from-primary/20 to-secondary/20 rounded-xl relative overflow-hidden">
         <div className="hero-overlay bg-opacity-20 absolute inset-0 z-0">
-          {/* Enhanced abstract patterns with animations */}
+
           <div className="absolute top-20 right-20 w-64 h-64 rounded-full bg-primary/10 blur-3xl animate-pulse"></div>
           <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-secondary/10 blur-3xl animate-pulse" style={{animationDuration: '4s'}}></div>
           
-          {/* Additional animated elements */}
           <div className="absolute top-40 left-20 w-32 h-32 rounded-full bg-accent/5 blur-2xl animate-bounce" style={{animationDuration: '7s'}}></div>
           <div className="absolute bottom-40 right-40 w-48 h-48 rounded-full bg-secondary/5 blur-xl animate-ping" style={{animationDuration: '8s', opacity: 0.4}}></div>
           
-          {/* Decorative particles */}
           <div className="particles absolute inset-0">
             {Array.from({ length: 8 }).map((_, index) => (
               <div 
@@ -148,33 +145,7 @@ function Home() {
 
       {/* Add the CSS animation definition */}
       <style jsx>{`
-        @keyframes float {
-          0% { 
-            opacity: 1;
-          }
-          50% { 
-            opacity: 0.6;
-          }
-          100% { 
-            opacity: 1;
-          }
-        }
         
-        .animate-float {
-          animation: float 5s ease-in-out infinite;
-        }
-        
-        @keyframes float-particle {
-          0% { transform: translateY(0px) translateX(0px); }
-          25% { transform: translateY(-10px) translateX(10px); }
-          50% { transform: translateY(0px) translateX(20px); }
-          75% { transform: translateY(10px) translateX(10px); }
-          100% { transform: translateY(0px) translateX(0px); }
-        }
-        
-        .particle {
-          animation: float-particle 10s linear infinite;
-        }
       `}</style>
     </div>
   );
