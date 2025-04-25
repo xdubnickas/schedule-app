@@ -151,19 +151,7 @@ function ScheduleViewer({
 
   const toggleFullscreen = () => {
     if (isExpanded) {
-      if (scheduleContainerRef.current) {
-        scheduleContainerRef.current.classList.add('schedule-exiting-fullscreen');
-        document.body.classList.add('schedule-exit-animation');
-        setTimeout(() => {
-          document.body.classList.remove('schedule-fullscreen-active');
-          document.body.style.overflow = 'auto';
-          setIsExpanded(false);
-          setTimeout(() => {
-            document.body.classList.remove('schedule-exit-animation');
-            scheduleContainerRef.current?.classList.remove('schedule-exiting-fullscreen');
-          }, 500);
-        }, 300);
-      }
+      exitFullscreen();
     } else {
       if (scheduleContainerRef.current) {
         scheduleContainerRef.current.classList.add('schedule-pre-fullscreen');
@@ -181,6 +169,23 @@ function ScheduleViewer({
           }, 100);
         }, 100);
       }
+    }
+  };
+  
+  // Function to exit fullscreen mode
+  const exitFullscreen = () => {
+    if (scheduleContainerRef.current) {
+      scheduleContainerRef.current.classList.add('schedule-exiting-fullscreen');
+      document.body.classList.add('schedule-exit-animation');
+      setTimeout(() => {
+        document.body.classList.remove('schedule-fullscreen-active');
+        document.body.style.overflow = 'auto';
+        setIsExpanded(false);
+        setTimeout(() => {
+          document.body.classList.remove('schedule-exit-animation');
+          scheduleContainerRef.current?.classList.remove('schedule-exiting-fullscreen');
+        }, 500);
+      }, 300);
     }
   };
 
@@ -214,6 +219,21 @@ function ScheduleViewer({
       }
     };
   }, [isModalOpen]);
+
+  // Add ESC key event handler
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape' && isExpanded) {
+        exitFullscreen();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isExpanded]);
 
   return (
     <div className="schedule-wrapper">
@@ -378,12 +398,23 @@ function ScheduleViewer({
         {isExpanded && (
           <button 
             onClick={toggleFullscreen}
-            className="fixed bottom-6 right-6 btn btn-circle btn-primary btn-lg shadow-lg z-50"
+            className="fixed bottom-6 right-6 btn btn-circle btn-primary btn-lg shadow-lg z-50 animate-pulse hover:animate-none"
             aria-label="Exit Full Screen"
+            style={{
+              animation: "pulse-glow 2s infinite",
+              boxShadow: "0 0 10px 3px rgba(255,255,255,0.3)"
+            }}
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
+            <style jsx>{`
+              @keyframes pulse-glow {
+                0% { box-shadow: 0 0 5px 0 rgba(255,255,255,0.4); }
+                50% { box-shadow: 0 0 15px 5px rgba(255,255,255,0.6); }
+                100% { box-shadow: 0 0 5px 0 rgba(255,255,255,0.4); }
+              }
+            `}</style>
           </button>
         )}
       </div>
