@@ -347,7 +347,15 @@ function ScheduleViewer({
                             <div
                               className={`absolute bg-gradient-to-br ${
                                 colorOptions[entry.colorIndex || 0]
-                              } text-white rounded-lg schedule-entry flex items-center px-3`}
+                              } text-white rounded-lg schedule-entry flex items-center px-3 ${
+                                // Add classes based on entry duration
+                                (() => {
+                                  const durationMinutes = (entry.endDecimal - entry.startDecimal) * 60;
+                                  if (durationMinutes <= 15) return 'schedule-entry-very-short';
+                                  if (durationMinutes <= 30) return 'schedule-entry-short';
+                                  return '';
+                                })()
+                              }`}
                               style={{
                                 top: '0.25rem',
                                 bottom: '0.25rem',
@@ -358,14 +366,34 @@ function ScheduleViewer({
                               }}
                               onClick={(e) => handleEntryClick(entry, e)}
                             >
-                              <div className={`font-medium ${isExpanded ? 'text-base' : 'text-sm truncate'}`}>
-                                {entry.title} 
-                                {isExpanded && (
-                                  <span className="ml-2 opacity-75 text-xs">
-                                    {formatTime(entry.startHour, entry.startMinute)} - {formatTime(entry.endHour, entry.endMinute)}
-                                  </span>
-                                )}
-                              </div>
+                              {(() => {
+                                const durationMinutes = (entry.endDecimal - entry.startDecimal) * 60;
+                                const isVeryShort = durationMinutes <= 15;
+                                const isShort = durationMinutes <= 30;
+                                
+                                return (
+                                  <>
+                                    <div className="entry-content">
+                                      <span className={`font-medium ${isExpanded ? 'text-base' : 'text-sm'} truncate`}>
+                                        {isVeryShort ? entry.title.substring(0, 3) + (entry.title.length > 3 ? '...' : '') : entry.title}
+                                      </span>
+                                      {isExpanded && !isVeryShort && (
+                                        <span className="ml-2 opacity-75 text-xs entry-time">
+                                          {formatTime(entry.startHour, entry.startMinute)} - {formatTime(entry.endHour, entry.endMinute)}
+                                        </span>
+                                      )}
+                                    </div>
+                                    {(isShort || isVeryShort) && (
+                                      <div className="entry-tooltip">
+                                        <strong>{entry.title}</strong>
+                                        <div>
+                                          {formatTime(entry.startHour, entry.startMinute)} - {formatTime(entry.endHour, entry.endMinute)}
+                                        </div>
+                                      </div>
+                                    )}
+                                  </>
+                                );
+                              })()}
                             </div>
                           )}
                         </div>

@@ -156,7 +156,6 @@
 }
 
 
-/* Button styling */
 .action-button {
   background: linear-gradient(135deg, #7472FF 0%, #5c59ff 100%);
   color: white;
@@ -180,5 +179,57 @@
 .action-button svg {
   width: 1.125rem;
   height: 1.125rem;
+}
+
+/* Schedule entry styling for short durations */
+.schedule-entry {
+  overflow: hidden;
+  min-width: 2rem;
+}
+
+.schedule-entry-short {
+  min-width: 0;
+}
+
+.schedule-entry-very-short {
+  justify-content: center;
+  padding-left: 0.25rem !important;
+  padding-right: 0.25rem !important;
+}
+
+/* Entry content handling */
+.entry-content {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hide time display for very short entries */
+.schedule-entry-very-short .entry-time {
+  display: none;
+}
+
+/* Tooltip for short entries */
+.entry-tooltip {
+  position: absolute;
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  text-align: center;
+  border-radius: 0.375rem;
+  padding: 0.5rem;
+  z-index: 50;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.schedule-entry:hover .entry-tooltip {
+  visibility: visible;
+  opacity: 1;
 }
 
