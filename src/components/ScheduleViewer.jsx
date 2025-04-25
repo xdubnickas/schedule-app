@@ -34,10 +34,11 @@ function ScheduleViewer({
   const scheduleContainerRef = useRef(null);
   const [isExpanded, setIsExpanded] = useState(initialView === 'expanded');
 
-  const formatTimeString = (hour) => {
-    // Ensure hour is properly formatted with leading zero if needed
+  const formatTimeString = (hour, minute = 0) => {
+    // Ensure hour and minute are properly formatted with leading zeros
     const formattedHour = hour.toString().padStart(2, '0');
-    return `${formattedHour}:00:00`;
+    const formattedMinute = minute.toString().padStart(2, '0');
+    return `${formattedHour}:${formattedMinute}:00`;
   };
 
   // Handle adding a new entry
@@ -65,19 +66,31 @@ function ScheduleViewer({
   }, [isEditable, onAddButtonClick, entries]);
 
   const processedEntries = entries.map(entry => {
-    const getHourFromTimeString = (timeStr) => {
-      if (!timeStr) return 0;
-      return parseInt(timeStr.split(':')[0], 10);
+    const getTimeComponents = (timeStr) => {
+      if (!timeStr) return { hour: 0, minute: 0 };
+      const parts = timeStr.split(':');
+      return {
+        hour: parseInt(parts[0], 10),
+        minute: parseInt(parts[1], 10)
+      };
     };
+    
     const dayIndex = typeof entry.day_of_week === 'number' 
       ? entry.day_of_week - 1 
       : 0;
-    const startHour = typeof entry.start === 'number' 
-      ? entry.start 
-      : getHourFromTimeString(entry.start_time);
-    const endHour = typeof entry.end === 'number' 
-      ? entry.end 
-      : getHourFromTimeString(entry.end_time) + 1;
+    
+    const startTime = typeof entry.start === 'number' 
+      ? { hour: entry.start, minute: 0 } 
+      : getTimeComponents(entry.start_time);
+    
+    const endTime = typeof entry.end === 'number' 
+      ? { hour: entry.end, minute: 0 } 
+      : getTimeComponents(entry.end_time);
+    
+    // Calculate decimal hours for precise positioning
+    const startDecimal = startTime.hour + (startTime.minute / 60);
+    const endDecimal = endTime.hour + (endTime.minute / 60);
+    
     const getColorIndex = (str) => {
       let hash = 0;
       for (let i = 0; i < str.length; i++) {
@@ -85,25 +98,30 @@ function ScheduleViewer({
       }
       return Math.abs(hash) % colorOptions.length;
     };
+    
     return {
       ...entry,
       dayIndex,
-      start: startHour,
-      end: endHour,
+      startHour: startTime.hour,
+      startMinute: startTime.minute,
+      endHour: endTime.hour,
+      endMinute: endTime.minute,
+      startDecimal: startDecimal,
+      endDecimal: endDecimal,
       colorIndex: getColorIndex(entry.title || '') 
     };
   });
 
   const earliestHour = processedEntries.length > 0 
-    ? Math.max(0, Math.min(...processedEntries.map(entry => entry.start)) - 1)
+    ? Math.max(0, Math.floor(Math.min(...processedEntries.map(entry => entry.startDecimal))) - 1)
     : 7; 
   const latestHour = processedEntries.length > 0
-    ? Math.min(24, Math.max(...processedEntries.map(entry => entry.end)) + 1)
+    ? Math.min(24, Math.ceil(Math.max(...processedEntries.map(entry => entry.endDecimal))) + 1)
     : 18;
   const hours = Array.from({ length: latestHour - earliestHour }, (_, i) => earliestHour + i);
 
-  const formatTime = (hour) => {
-    return `${hour}:00`;
+  const formatTime = (hour, minute = 0) => {
+    return `${hour}:${minute.toString().padStart(2, '0')}`;
   };
 
   // Simple handlers for modal interactions
@@ -307,12 +325,16 @@ function ScheduleViewer({
                       {day}
                     </div>
                     {hours.map((hour, colIdx) => {
+                      const hour_end = hour + 1;
                       const entry = processedEntries.find(
-                        e => e.dayIndex === rowIdx && e.start <= hour && hour < e.end
+                        e => e.dayIndex === rowIdx && 
+                            ((e.startDecimal < hour_end && e.endDecimal > hour) || 
+                             (e.startHour === hour && e.startMinute === 0 && e.endHour === hour && e.endMinute > 0))
                       );
-                      const isFirstHourOfEntry = entry && hour === entry.start;
+                      const isFirstHourOfEntry = entry && entry.startHour === hour;
                       const isWorkHour = hour >= 8 && hour <= 17;
                       const isWeekend = rowIdx >= 5;
+                      
                       return (
                         <div 
                           key={`cell-${rowIdx}-${colIdx}`} 
@@ -323,17 +345,26 @@ function ScheduleViewer({
                         >
                           {isFirstHourOfEntry && (
                             <div
-                              className={`absolute inset-1 bg-gradient-to-br ${
+                              className={`absolute bg-gradient-to-br ${
                                 colorOptions[entry.colorIndex || 0]
                               } text-white rounded-lg schedule-entry flex items-center px-3`}
                               style={{
-                                width: `calc(${(entry.end - entry.start) * 100}% - ${(entry.end - entry.start - 1) * 1}px)`,
+                                top: '0.25rem',
+                                bottom: '0.25rem',
+                                left: `${(entry.startMinute / 60) * 100}%`,
+                                right: `${100 - ((entry.endDecimal - entry.startHour) / (hours.length) * 100)}%`,
+                                width: `calc(${(entry.endDecimal - entry.startDecimal) * 100}% - ${(Math.ceil(entry.endDecimal) - Math.floor(entry.startDecimal) - 1) * 1}px)`,
                                 zIndex: 10,
                               }}
                               onClick={(e) => handleEntryClick(entry, e)}
                             >
                               <div className={`font-medium ${isExpanded ? 'text-base' : 'text-sm truncate'}`}>
-                                {entry.title}
+                                {entry.title} 
+                                {isExpanded && (
+                                  <span className="ml-2 opacity-75 text-xs">
+                                    {formatTime(entry.startHour, entry.startMinute)} - {formatTime(entry.endHour, entry.endMinute)}
+                                  </span>
+                                )}
                               </div>
                             </div>
                           )}
@@ -419,7 +450,7 @@ function ScheduleViewer({
         )}
       </div>
       
-      {/* Simple modal render */}
+      {/* Modal render */}
       {isModalOpen && (
         <EntryModal
           isOpen={isModalOpen}
